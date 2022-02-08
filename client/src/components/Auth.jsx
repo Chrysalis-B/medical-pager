@@ -4,6 +4,8 @@ import axios from 'axios';
 
 import signinImage from '../assets/signup.jpg';
 
+const cookies = new Cookies();
+
 const initialState = {
   fullName: '',
   username: '',
@@ -24,9 +26,31 @@ const Auth = () => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(form); 
+
+    const { fullName, username, password, phoneNumber, avatarURL } = form;
+
+    const URL = 'http://localhost:5000/auth';
+
+    const { data: { token, userId, hashedPassword } } = await axios.post(
+      `${URL}/${isSignUp ? 'signup' : 'login'}`,
+      { fullName, username, password, phoneNumber, avatarURL }
+    );
+
+    cookies.set('token', token);
+    cookies.set('username', username);
+    cookies.set('fullName', fullName);
+    cookies.set('userId', userId);
+
+    if (isSignUp) {
+      cookies.set('phoneNumber', phoneNumber);
+      cookies.set('avatarURL', avatarURL);
+      cookies.set('hashedPassword', hashedPassword);
+    }
+
+    window.location.reload();
+
   }
 
   const switchMode = () => {
@@ -63,7 +87,7 @@ const Auth = () => {
             </div>
             {isSignUp && (
               <div className='auth__form-container_fields-content_input'>
-                <label htmlFor="phoneNumber">Full Name</label>
+                <label htmlFor="phoneNumber">Phone Number</label>
                 <input
                   name='phoneNumber'
                   type='text'
