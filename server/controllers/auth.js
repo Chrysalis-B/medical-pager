@@ -1,6 +1,6 @@
 import { connect } from 'getstream';
 import bcrypt from 'bcrypt';
-import StreamChat from 'stream-chat';
+import { StreamChat } from 'stream-chat';
 import crypto from 'crypto';
 
 const api_key = process.env.STREAM_API_KEY;
@@ -62,7 +62,7 @@ export const login = async (req, res) => {
       });
     }
     else {
-      res.status(500).json({message: 'Incorrect password'});
+      res.status(500).json({ message: 'Incorrect password' });
     }
 
   } catch (error) {
